@@ -1,0 +1,24 @@
+{
+  "name": "LJ-posts-analyser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:sass": "node-sass -r --output-style compressed src/styles.scss -o dist",
+    "watch:sass": "npm run build:sass && npm run build:sass -- -w"
+  },
+  "author": "Marina Sulim",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "natural": "^0.6.3",
+    "request": "^2.88.0",
+    "striptags": "^3.1.1",
+    "xml2json": "^0.11.2"
+  },
+  "devDependencies": {
+    "node-sass": "4.11.0"
+  }
+}
