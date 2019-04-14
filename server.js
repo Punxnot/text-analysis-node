@@ -7,6 +7,7 @@ const parser = require('xml2json');
 const striptags = require('striptags');
 const natural = require('natural');
 const tokenizer = new natural.AggressiveTokenizerRu({language: "ru"});
+const sw = require('stopword');
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
@@ -19,11 +20,16 @@ const languageDiversity = (text) => {
 
   // Create an array of all words
   let allWords = tokenizer.tokenize(text);
-  console.log("All words number:");
-  console.log(allWords.length);
+  console.log("Before removing stopwords:");
+  console.log(allWords);
+
+  // Remove Russian stopwords
+  let meaningfulWords = sw.removeStopwords(allWords, sw.ru);
+  console.log("After removing stopwords:");
+  console.log(meaningfulWords);
 
   // Stem each word in the array
-  const stemmedWords = allWords.map(x => natural.PorterStemmerRu.stem(x));
+  const stemmedWords = meaningfulWords.map(x => natural.PorterStemmerRu.stem(x));
 
   // Remove duplicates
   const uniqueWords = Array.from(new Set(stemmedWords));
