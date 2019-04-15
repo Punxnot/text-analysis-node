@@ -8,9 +8,20 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div class="container">
+  <div class="wrapper">
     <input id="name" class="form-control" placeholder="Имя">
     <button type="button" id="sendButton">Посмотреть</button>
+    <div id="resultsContainer" class="hidden">
+      <div id="diversity">
+        Разнообразие текста:
+        <span class="result-value"></span>
+      </div>
+      <div id="frequency">
+        Часто встречающиеся слова:
+        <span class="result-value"></span>
+      </div>
+    </div>
+    <div id="errorContainer"></div>
   </div>
 
   <script src="/index.js"></script>

@@ -52,10 +52,10 @@ const languageDiversity = (text) => {
 
   // Create an array of all words
   let allWords = tokenizer.tokenize(text);
-  // console.log("Before removing stopwords:");
-  // console.log(allWords.length);
+  console.log("Before removing stopwords:");
+  console.log(allWords.length);
 
-  const customStopwords = ["и", "который", "которая", "которые", "которое", "которым", "которых", "все", "всё", "свой", "свои", "своя", "сам", "сами", "сама", "само", "такой", "такая", "такие", "такое", "ещё", "еще", "nbsp"];
+  const customStopwords = ["и", "который", "которая", "которые", "которое", "которым", "которых", "все", "всё", "свой", "свои", "своя", "сам", "сами", "сама", "само", "такой", "такая", "такие", "такое", "ещё", "еще", "nbsp", "mdash", "как", "quot"];
 
   // Remove Russian stopwords
   let meaningfulWords = sw.removeStopwords(allWords, sw.ru);
@@ -101,9 +101,13 @@ app.get('/posts/:user', (req, res) => {
 
   request.get(options, function(err, response, body) {
     if (err) {
+			console.log("Something went wrong!")
       console.log(err);
       return;
-    }
+    } else if (response.statusCode == "404") {
+			res.status(404).send("Not found");
+			return;
+		}
 
     responseJSON = parser.toJson(response.body.toString(), { object: true });
     let allEntries = responseJSON.feed.entry;
