@@ -81,7 +81,7 @@ const languageDiversity = (text) => {
   // Calculate resulting text diversity
   // TODO: Maybe use allWords instead of meaningfulWords?
   // TODO: Remove one-letter words
-  const diversity = uniqueWords.length / meaningfulWords.length;
+  const diversity = (uniqueWords.length / meaningfulWords.length).toFixed(2);
 
   return {"diversity": diversity, "mostFrequentWords": mostFrequentWords};
 };

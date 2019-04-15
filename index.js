@@ -63,7 +63,9 @@ sanitize = (string) => {
 
 displayResults = (resultsObj) => {
   diversityContainer.innerHTML = resultsObj.diversity;
-  frequencyContainer.innerHTML = resultsObj.mostFrequentWords;
+  for (let i=0; i<resultsObj.mostFrequentWords.length; i++) {
+    frequencyContainer.innerHTML += `${resultsObj.mostFrequentWords[i][0]}: ${resultsObj.mostFrequentWords[i][1]}<br>`;
+  }
 };
 
 displayError = (errorText) => {
