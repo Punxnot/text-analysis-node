@@ -1,3 +1,10 @@
+$bgColor: #2c3e50;
+
+body {
+  background: $bgColor;
+  color: #ffffff;
+}
+
 .hidden {
   display: none;
 }

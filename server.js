@@ -52,43 +52,43 @@ const languageDiversity = (text) => {
 
   // Create an array of all words
   let allWords = tokenizer.tokenize(text);
-  console.log("Before removing stopwords:");
-  console.log(allWords.length);
 
-  const customStopwords = ["и", "который", "которая", "которые", "которое", "которым", "которых", "все", "всё", "свой", "свои", "своя", "сам", "сами", "сама", "само", "такой", "такая", "такие", "такое", "ещё", "еще", "nbsp", "mdash", "как", "quot"];
+  const customStopwords = ["и", "который", "которая", "которые", "которое", "которым", "которых", "все", "всё", "всех", "всего", "всеми", "всем", "его", "ее", "её", "их", "ими", "них", "ними", "nbsp", "mdash", "quot", "laquo", "raquo"];
 
   // Remove Russian stopwords
   let meaningfulWords = sw.removeStopwords(allWords, sw.ru);
 
   // Remove custom stopwords
   meaningfulWords = sw.removeStopwords(meaningfulWords, customStopwords);
-  // console.log("After removing stopwords:");
-  // console.log(meaningfulWords.length);
+
+	// Remove one-letter words
+	let meaningfulWordsPure = [];
+
+	for (let i=0; i<meaningfulWords.length; i++) {
+		if (meaningfulWords[i].length > 1) {
+			meaningfulWordsPure.push(meaningfulWords[i]);
+		}
+	}
 
   // Stem each word in the array
-  const stemmedWords = meaningfulWords.map(x => natural.PorterStemmerRu.stem(x));
+  const stemmedWords = meaningfulWordsPure.map(x => natural.PorterStemmerRu.stem(x));
 
   // Get 10 most frequent words
-  const wordsFrequencyObj = wordsFrequency(stemmedWords);
+  const wordsFrequencyObj = wordsFrequency(meaningfulWordsPure);
   const mostFrequentWords = sortByValue(wordsFrequencyObj).slice(0, 10);
-  console.log(mostFrequentWords);
 
   // Remove duplicates
   const uniqueWords = Array.from(new Set(stemmedWords));
-  // console.log("Unique words number:");
-  // console.log(uniqueWords.length);
 
   // Calculate resulting text diversity
   // TODO: Maybe use allWords instead of meaningfulWords?
-  // TODO: Remove one-letter words
-  const diversity = (uniqueWords.length / meaningfulWords.length).toFixed(2);
+  const diversity = (uniqueWords.length / meaningfulWordsPure.length).toFixed(2);
 
   return {"diversity": diversity, "mostFrequentWords": mostFrequentWords};
 };
 
 app.get('/posts/:user', (req, res) => {
   let user = req.params.user;
-  console.log(user);
   let allPosts = "";
 
   // Get user's latest posts via LJ API
@@ -120,8 +120,6 @@ app.get('/posts/:user', (req, res) => {
     const result = {
       data: languageDiversity(allPosts)
     };
-    console.log(JSON.stringify(result));
-    console.log("================");
 
     res.send(JSON.stringify(result));
   });

@@ -29,24 +29,20 @@ getPosts = (userName) => {
     url: `posts/${userName}`,
     success: function(res) {
       res = JSON.parse(res);
-      console.log("Got results");
-      console.log("Found!");
-      console.log(res.data);
       errorContainer.innerHTML = "";
       loading = false;
       displayResults(res.data);
       resultsContainer.classList.remove("hidden");
     }, error: function(XMLHttpRequest, textStatus, errorThrown) {
       if (XMLHttpRequest.status == 0) {
-        console.log(' Check Your Network.');
+        console.error(' Check Your Network.');
       } else if (XMLHttpRequest.status == 404) {
-        console.log("Got results");
-        console.log("Not found");
+        console.error("Not found");
         displayError("Мы не знаем такого пользователя");
       } else if (XMLHttpRequest.status == 500) {
-        console.log('Internel Server Error.');
+        console.error('Internal Server Error.');
       }  else {
-        console.log('Unknow Error.\n' + XMLHttpRequest.responseText);
+        console.error('Unknow Error.\n' + XMLHttpRequest.responseText);
       }
     }
   });
@@ -66,7 +62,7 @@ displayResults = (resultsObj) => {
   frequencyContainer.innerHTML = "";
   frequencyContainer.innerHTML += "<br>";
   for (let i=0; i<resultsObj.mostFrequentWords.length; i++) {
-    frequencyContainer.innerHTML += `${resultsObj.mostFrequentWords[i][0]}: ${resultsObj.mostFrequentWords[i][1]}<br>`;
+    frequencyContainer.innerHTML += `${resultsObj.mostFrequentWords[i][0]}<br>`;
   }
 };
 
