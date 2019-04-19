@@ -1,10 +1,123 @@
 $bgColor: #2c3e50;
+$lightestGrey: #f3f3f3;
+$brightColor: #3498db;
+
+$fireColor: rgb(255,80,0);
+$fireColorT: rgba(255,80,0,0);
+$dur: 1s;
+$blur: 2px;
+$fireRad: 3em;
+$parts: 50;
+$partSize: 120px;
 
 body {
   background: $bgColor;
-  color: #ffffff;
+  color: $lightestGrey;
+  font-family: Arial, sans-serif;
 }
 
 .hidden {
   display: none;
+}
+
+.wrapper {
+  width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.inputs-container {
+  font-size: 0;
+  margin-bottom: 20px;
+}
+
+.form-control {
+  display: inline-block;
+  vertical-align: middle;
+  width: 250px;
+  height: 30px;
+  border: 0;
+  padding: 0;
+  padding-left: 10px;
+  line-height: 30px;
+  font-size: 16px;
+  outline: none;
+}
+
+.btn {
+  font-size: 16px;
+  height: 30px;
+  line-height: 30px;
+  display: inline-block;
+  vertical-align: middle;
+  border: 0;
+  padding: 0 10px;
+  background: $brightColor;
+  color: $lightestGrey;
+  outline: none;
+}
+
+.result-item {
+  margin-bottom: 20px;
+}
+
+.loader {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto;
+  border: 4px solid $lightestGrey;
+  border-top: 4px solid $brightColor;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+// Fire
+
+.fire {
+	font-size: 24px;
+	filter: blur($blur);
+	-webkit-filter: blur($blur);
+	margin: 3em auto 0 auto;
+	position: fixed;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+	width: 240px;
+}
+.particle {
+	animation: rise $dur ease-in infinite;
+	background-image: radial-gradient($fireColor 20%,$fireColorT 70%);
+	border-radius: 50%;
+	mix-blend-mode: screen;
+	opacity: 0;
+	position: absolute;
+	bottom: 0;
+	width: $partSize;
+	height: $partSize;
+	// spread particles out in time and x-position to get desired effect
+	@for $p from 1 through $parts {
+		&:nth-of-type(#{$p}) {
+			animation-delay: $dur * random();
+			left: calc((100% - #{$partSize}) * #{($p - 1)/$parts});
+		}
+	}
+}
+@keyframes rise {
+	from {
+		opacity: 0;
+		transform: translateY(0) scale(1);
+	}
+	25% {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+		transform: translateY(-10em) scale(0);
+	}
 }

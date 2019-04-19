@@ -9,20 +9,25 @@
 </head>
 <body>
   <div class="wrapper">
-    <input id="name" class="form-control" placeholder="Имя">
-    <button type="button" id="sendButton">Посмотреть</button>
+    <div class="inputs-container">
+      <input id="name" class="form-control" placeholder="Имя">
+      <button type="button" id="sendButton" class="btn">Посмотреть</button>
+    </div>
     <div id="resultsContainer" class="hidden">
-      <div id="diversity">
+      <div id="diversity" class="result-item">
         Разнообразие текста:
         <span class="result-value"></span>
       </div>
-      <div id="frequency">
+      <div id="frequency" class="result-item">
         Часто встречающиеся слова:
         <span class="result-value"></span>
       </div>
     </div>
     <div id="errorContainer"></div>
+    <div class="loader hidden"></div>
   </div>
+
+  <div id="fireContainer" class="fire"></div>
 
   <script src="/index.js"></script>
 </body>

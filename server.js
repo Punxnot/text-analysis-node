@@ -46,7 +46,7 @@ const wordsFrequency = (wordsArray) => {
   return result;
 };
 
-const languageDiversity = (text) => {
+const languageDiversity = (text, name) => {
   // Remove HTML tags from resulting string
   text = striptags(text).toLowerCase();
 
@@ -54,6 +54,10 @@ const languageDiversity = (text) => {
   let allWords = tokenizer.tokenize(text);
 
   const customStopwords = ["и", "который", "которая", "которые", "которое", "которым", "которых", "все", "всё", "всех", "всего", "всеми", "всем", "его", "ее", "её", "их", "ими", "них", "ними", "nbsp", "mdash", "quot", "laquo", "raquo"];
+
+	const easterNames = ["bearinbloodbath", "mozgosteb"];
+
+	const isEaster = easterNames.includes(name);
 
   // Remove Russian stopwords
   let meaningfulWords = sw.removeStopwords(allWords, sw.ru);
@@ -84,7 +88,7 @@ const languageDiversity = (text) => {
   // TODO: Maybe use allWords instead of meaningfulWords?
   const diversity = (uniqueWords.length / meaningfulWordsPure.length).toFixed(2);
 
-  return {"diversity": diversity, "mostFrequentWords": mostFrequentWords};
+  return {"diversity": diversity, "mostFrequentWords": mostFrequentWords, "isEaster": isEaster};
 };
 
 app.get('/posts/:user', (req, res) => {
@@ -118,7 +122,7 @@ app.get('/posts/:user', (req, res) => {
     }
 
     const result = {
-      data: languageDiversity(allPosts)
+      data: languageDiversity(allPosts, user)
     };
 
     res.send(JSON.stringify(result));

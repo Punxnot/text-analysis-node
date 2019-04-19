@@ -4,7 +4,8 @@ const resultsContainer = document.getElementById("resultsContainer");
 const diversityContainer = document.querySelector("#diversity .result-value");
 const frequencyContainer = document.querySelector("#frequency .result-value");
 const errorContainer = document.getElementById("errorContainer");
-let loading = false;
+const loader = document.querySelector(".loader");
+const fireContainer = document.getElementById("fireContainer");
 
 $(() => {
   // Get user input
@@ -21,8 +22,9 @@ $(() => {
   });
 });
 
-getPosts = (userName) => {
-  loading = true;
+const getPosts = (userName) => {
+  hideFire();
+  switchLoader(true);
   resultsContainer.classList.add("hidden");
 
   $.ajax({
@@ -30,12 +32,13 @@ getPosts = (userName) => {
     success: function(res) {
       res = JSON.parse(res);
       errorContainer.innerHTML = "";
-      loading = false;
+      switchLoader(false);
       displayResults(res.data);
       resultsContainer.classList.remove("hidden");
     }, error: function(XMLHttpRequest, textStatus, errorThrown) {
+      switchLoader(false);
       if (XMLHttpRequest.status == 0) {
-        console.error(' Check Your Network.');
+        console.error("Check Your Network.");
       } else if (XMLHttpRequest.status == 404) {
         console.error("Not found");
         displayError("Мы не знаем такого пользователя");
@@ -48,7 +51,7 @@ getPosts = (userName) => {
   });
 };
 
-sanitize = (string) => {
+const sanitize = (string) => {
   var output = string.replace(/<script[^>]*?>.*?<\/script>/gi, '').
 			 replace(/<[\/\!]*?[^<>]*?>/gi, '').
 			 replace(/<style[^>]*?>.*?<\/style>/gi, '').
@@ -57,7 +60,11 @@ sanitize = (string) => {
   return output;
 };
 
-displayResults = (resultsObj) => {
+const displayResults = (resultsObj) => {
+  if (resultsObj.isEaster) {
+    showFire();
+  }
+
   diversityContainer.innerHTML = resultsObj.diversity;
   frequencyContainer.innerHTML = "";
   frequencyContainer.innerHTML += "<br>";
@@ -66,6 +73,26 @@ displayResults = (resultsObj) => {
   }
 };
 
-displayError = (errorText) => {
+const displayError = (errorText) => {
   errorContainer.innerHTML = errorText;
+};
+
+const switchLoader = (isLoading) => {
+  if (isLoading) {
+    loader.classList.remove("hidden");
+  } else {
+    loader.classList.add("hidden");
+  }
+};
+
+const showFire = () => {
+  for (let i=0; i<50; i++) {
+    let particle = document.createElement("div");
+    particle.classList.add("particle");
+    fireContainer.appendChild(particle);
+  }
+};
+
+const hideFire = () => {
+  fireContainer.innerHTML = "";
 };
