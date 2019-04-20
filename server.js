@@ -53,9 +53,9 @@ const languageDiversity = (text, name) => {
   // Create an array of all words
   let allWords = tokenizer.tokenize(text);
 
-  const customStopwords = ["и", "который", "которая", "которые", "которое", "которым", "которых", "все", "всё", "всех", "всего", "всеми", "всем", "его", "ее", "её", "их", "ими", "них", "ними", "nbsp", "mdash", "quot", "laquo", "raquo"];
+  const customStopwords = ["ещё", "какой", "какая", "какое", "какие", "какого", "очень", "и", "который", "которая", "которые", "которое", "которым", "которых", "все", "всё", "всех", "всего", "всеми", "всем", "его", "ее", "её", "их", "ими", "них", "ними", "nbsp", "mdash", "quot", "laquo", "raquo"];
 
-	const easterNames = ["bearinbloodbath", "mozgosteb"];
+	const easterNames = ["mozgosteb", "bearinbloodbath", "adscripta"];
 
 	const isEaster = easterNames.includes(name);
 
@@ -88,7 +88,7 @@ const languageDiversity = (text, name) => {
   // TODO: Maybe use allWords instead of meaningfulWords?
   const diversity = (uniqueWords.length / meaningfulWordsPure.length).toFixed(2);
 
-  return {"diversity": diversity, "mostFrequentWords": mostFrequentWords, "isEaster": isEaster};
+  return {"diversity": diversity, "mostFrequentWords": mostFrequentWords, "isEaster": isEaster, "name": name};
 };
 
 app.get('/posts/:user', (req, res) => {

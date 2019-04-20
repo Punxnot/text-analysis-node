@@ -1,6 +1,6 @@
-$bgColor: #2c3e50;
+$bgColor: #008080;
 $lightestGrey: #f3f3f3;
-$brightColor: #3498db;
+$brightColor: #3EB489;
 
 $fireColor: rgb(255,80,0);
 $fireColorT: rgba(255,80,0,0);
@@ -11,9 +11,40 @@ $parts: 50;
 $partSize: 120px;
 
 body {
-  background: $bgColor;
+  min-height: 100vh;
+  background-color: $bgColor;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   color: $lightestGrey;
   font-family: Arial, sans-serif;
+
+  &.mozgosteb {
+    background-image: url('../img/mozgosteb.jpg');
+    background-color: black;
+
+    .btn {
+      background: #3b3101;
+    }
+  }
+
+  &.bearinbloodbath {
+    background-image: url('../img/bearinbloodbath.jpg');
+    background-color: black;
+
+    .btn {
+      background: #bb0a1e;
+    }
+  }
+
+  &.adscripta {
+    background-image: url('../img/adscripta.jpg');
+    background-color: black;
+
+    .btn {
+      background: #5F9EA0;
+    }
+  }
 }
 
 .hidden {
@@ -74,50 +105,4 @@ body {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-
-// Fire
-
-.fire {
-	font-size: 24px;
-	filter: blur($blur);
-	-webkit-filter: blur($blur);
-	margin: 3em auto 0 auto;
-	position: fixed;
-  bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-	width: 240px;
-}
-.particle {
-	animation: rise $dur ease-in infinite;
-	background-image: radial-gradient($fireColor 20%,$fireColorT 70%);
-	border-radius: 50%;
-	mix-blend-mode: screen;
-	opacity: 0;
-	position: absolute;
-	bottom: 0;
-	width: $partSize;
-	height: $partSize;
-	// spread particles out in time and x-position to get desired effect
-	@for $p from 1 through $parts {
-		&:nth-of-type(#{$p}) {
-			animation-delay: $dur * random();
-			left: calc((100% - #{$partSize}) * #{($p - 1)/$parts});
-		}
-	}
-}
-@keyframes rise {
-	from {
-		opacity: 0;
-		transform: translateY(0) scale(1);
-	}
-	25% {
-		opacity: 1;
-	}
-	to {
-		opacity: 0;
-		transform: translateY(-10em) scale(0);
-	}
 }

@@ -5,7 +5,6 @@ const diversityContainer = document.querySelector("#diversity .result-value");
 const frequencyContainer = document.querySelector("#frequency .result-value");
 const errorContainer = document.getElementById("errorContainer");
 const loader = document.querySelector(".loader");
-const fireContainer = document.getElementById("fireContainer");
 
 $(() => {
   // Get user input
@@ -23,7 +22,7 @@ $(() => {
 });
 
 const getPosts = (userName) => {
-  hideFire();
+  hideEaster();
   switchLoader(true);
   resultsContainer.classList.add("hidden");
 
@@ -62,7 +61,7 @@ const sanitize = (string) => {
 
 const displayResults = (resultsObj) => {
   if (resultsObj.isEaster) {
-    showFire();
+    showEaster(resultsObj.name);
   }
 
   diversityContainer.innerHTML = resultsObj.diversity;
@@ -85,14 +84,10 @@ const switchLoader = (isLoading) => {
   }
 };
 
-const showFire = () => {
-  for (let i=0; i<50; i++) {
-    let particle = document.createElement("div");
-    particle.classList.add("particle");
-    fireContainer.appendChild(particle);
-  }
+const showEaster = (userName) => {
+  document.body.classList.add(userName);
 };
 
-const hideFire = () => {
-  fireContainer.innerHTML = "";
+const hideEaster = () => {
+  document.body.className = "";
 };
