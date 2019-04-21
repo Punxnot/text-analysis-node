@@ -1,14 +1,6 @@
-$bgColor: #008080;
+$bgColor: #004359;
 $lightestGrey: #f3f3f3;
-$brightColor: #3EB489;
-
-$fireColor: rgb(255,80,0);
-$fireColorT: rgba(255,80,0,0);
-$dur: 1s;
-$blur: 2px;
-$fireRad: 3em;
-$parts: 50;
-$partSize: 120px;
+$brightColor: #00A3D9;
 
 body {
   min-height: 100vh;
@@ -19,12 +11,18 @@ body {
   color: $lightestGrey;
   font-family: Arial, sans-serif;
 
+  &.not-found {
+    background-image: url('../img/frank-404.png');
+    background-size: auto;
+    background-position: left bottom;
+  }
+
   &.mozgosteb {
     background-image: url('../img/mozgosteb.jpg');
     background-color: black;
 
     .btn {
-      background: #3b3101;
+      background: #0e1111;
     }
   }
 
@@ -42,7 +40,7 @@ body {
     background-color: black;
 
     .btn {
-      background: #5F9EA0;
+      background: #5e1914;
     }
   }
 }
@@ -76,16 +74,17 @@ body {
 }
 
 .btn {
-  font-size: 16px;
-  height: 30px;
-  line-height: 30px;
   display: inline-block;
   vertical-align: middle;
-  border: 0;
+  height: 30px;
+  line-height: 30px;
   padding: 0 10px;
+  font-size: 16px;
+  border: 0;
   background: $brightColor;
   color: $lightestGrey;
   outline: none;
+  cursor: pointer;
 }
 
 .result-item {

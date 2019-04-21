@@ -31,6 +31,7 @@ const getPosts = (userName) => {
     success: function(res) {
       res = JSON.parse(res);
       errorContainer.innerHTML = "";
+      document.body.classList.remove("not-found");
       switchLoader(false);
       displayResults(res.data);
       resultsContainer.classList.remove("hidden");
@@ -73,6 +74,7 @@ const displayResults = (resultsObj) => {
 };
 
 const displayError = (errorText) => {
+  document.body.classList.add("not-found");
   errorContainer.innerHTML = errorText;
 };
 
