@@ -1,5 +1,6 @@
 const userInput = document.getElementById("name");
 const sendButton = document.getElementById("sendButton");
+const clearButton = document.getElementById("clearButton");
 const resultsContainer = document.getElementById("resultsContainer");
 const diversityContainer = document.querySelector("#diversity .result-value");
 const frequencyContainer = document.querySelector("#frequency .result-value");
@@ -8,17 +9,26 @@ const errorContainer = document.getElementById("errorContainer");
 const loader = document.querySelector(".loader");
 
 $(() => {
+  userInput.focus();
+  
   // Get user input
   sendButton.addEventListener("click", () => {
     let queryString = sanitize(userInput.value);
     getPosts(queryString);
   });
 
+  // Watch Enter event
   userInput.addEventListener("keydown", (e) => {
     if (e.keyCode == 13) {
       let queryString = sanitize(userInput.value);
       getPosts(queryString);
     }
+  });
+
+  // Clear input
+  clearButton.addEventListener("click", () => {
+    userInput.value = "";
+    userInput.focus();
   });
 });
 

@@ -56,21 +56,24 @@ body {
 }
 
 .inputs-container {
-  font-size: 0;
+  position: relative;
   margin-bottom: 20px;
+  font-size: 0;
 }
 
 .form-control {
+  box-sizing: border-box;
   display: inline-block;
   vertical-align: middle;
-  width: 250px;
+  width: 260px;
   height: 30px;
   border: 0;
-  padding: 0;
-  padding-left: 10px;
+  padding: 0 40px 0 10px;
   line-height: 30px;
   font-size: 16px;
   outline: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn {
@@ -89,6 +92,26 @@ body {
 
 .result-item {
   margin-bottom: 20px;
+}
+
+.clear-btn {
+  position: absolute;
+  left: 227px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  background-color: transparent;
+  background-image: url(//yastatic.net/s3/web4static/_/f0vM6kFiHLugimNeqhQEGoZgpUE.svg);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: opacity .3s;
+  opacity: 0.2;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .loader {
