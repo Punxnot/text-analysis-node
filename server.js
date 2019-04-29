@@ -8,11 +8,22 @@ const striptags = require('striptags');
 const natural = require('natural');
 const tokenizer = new natural.AggressiveTokenizerRu({language: "ru"});
 const sw = require('stopword');
+const Morphy = require('phpmorphy').default;
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.raw());
+
+const morphy = new Morphy('ru', {
+//  nojo:                false,
+  storage:             Morphy.STORAGE_MEM,
+  predict_by_suffix:   true,
+  predict_by_db:       true,
+  graminfo_as_text:    true,
+  use_ancodes_cache:   false,
+  resolve_ancodes:     Morphy.RESOLVE_ANCODES_AS_TEXT
+});
 
 const sortByValue = (obj) => {
   // Convert object into array
@@ -70,12 +81,17 @@ const languageDiversity = (text, name) => {
 
 	for (let i=0; i<meaningfulWords.length; i++) {
 		if (meaningfulWords[i].length > 1) {
-			meaningfulWordsPure.push(meaningfulWords[i]);
+			let wordOptions = morphy.lemmatize(meaningfulWords[i]);
+			if (wordOptions[0]) {
+				meaningfulWordsPure.push(wordOptions[0]);
+			}
 		}
 	}
 
   // Stem each word in the array
-  const stemmedWords = meaningfulWordsPure.map(x => natural.PorterStemmerRu.stem(x));
+  // const stemmedWords = meaningfulWordsPure.map(x => natural.PorterStemmerRu.stem(x));
+	// Remove stemming for now. To be refactored.
+	const stemmedWords = meaningfulWordsPure;
 
   // Get 10 most frequent words
   const wordsFrequencyObj = wordsFrequency(meaningfulWordsPure);
