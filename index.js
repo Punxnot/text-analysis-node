@@ -3,6 +3,7 @@ const sendButton = document.getElementById("sendButton");
 const resultsContainer = document.getElementById("resultsContainer");
 const diversityContainer = document.querySelector("#diversity .result-value");
 const frequencyContainer = document.querySelector("#frequency .result-value");
+const averageLengthContainer = document.querySelector("#averageLength .result-value");
 const errorContainer = document.getElementById("errorContainer");
 const loader = document.querySelector(".loader");
 
@@ -60,12 +61,26 @@ const sanitize = (string) => {
   return output;
 };
 
+const getNumWord = (num) => {
+  const numStr = num + "";
+  const lastDigit = numStr[numStr.length - 1];
+  if (+lastDigit === 1) {
+    return "слово";
+  } else if ([2, 3, 4].includes(+lastDigit)) {
+    return "слова";
+  } else {
+    return "слов";
+  }
+};
+
 const displayResults = (resultsObj) => {
   if (resultsObj.isEaster) {
     showEaster(resultsObj.name);
   }
 
   diversityContainer.innerHTML = resultsObj.diversity;
+  const numWord = getNumWord(resultsObj.averagePostLength);
+  averageLengthContainer.innerHTML = `${resultsObj.averagePostLength} ${numWord}`;
   frequencyContainer.innerHTML = "";
   frequencyContainer.innerHTML += "<br>";
   for (let i=0; i<resultsObj.mostFrequentWords.length; i++) {

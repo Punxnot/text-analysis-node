@@ -10,6 +10,8 @@ const tokenizer = new natural.AggressiveTokenizerRu({language: "ru"});
 const sw = require('stopword');
 const Morphy = require('phpmorphy').default;
 
+const POSTSNUMBER = 25;
+
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -104,7 +106,9 @@ const languageDiversity = (text, name) => {
   // TODO: Maybe use allWords instead of meaningfulWords?
   const diversity = (uniqueWords.length / meaningfulWordsPure.length).toFixed(2);
 
-  return {"diversity": diversity, "mostFrequentWords": mostFrequentWords, "isEaster": isEaster, "name": name};
+	const averagePostLength = Math.round(allWords.length / POSTSNUMBER);
+
+  return {"diversity": diversity, "mostFrequentWords": mostFrequentWords, "isEaster": isEaster, "averagePostLength": averagePostLength, "name": name};
 };
 
 app.get('/posts/:user', (req, res) => {
