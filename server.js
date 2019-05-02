@@ -115,45 +115,16 @@ const languageDiversity = (text, name) => {
   // Calculate resulting text diversity
   let diversity = +(uniqueWords.length / allWords.length).toFixed(3);
 
-	switch (maxWholeWords) {
-		case 0:
-	    diversity = 0;
-	    break;
-		case 1000:
-	    diversity -= 0.245;
-	    break;
-	  case 2000:
-			diversity -= 0.19;
-			break;
-		case 3000:
-			diversity -= 0.15;
-			break;
-		case 4000:
-			diversity -= 0.11;
-			break;
-		case 5000:
-			diversity -= 0.09;
-			break;
-		case 6000:
-			diversity -= 0.065;
-			break;
-		case 7000:
-			diversity -= 0.04;
-			break;
-		case 8000:
-			diversity -= 0.03;
-			break;
-		case 9000:
-			diversity -= 0.01;
-			break;
-	  default:
-			diversity = diversity;
-	}
-
-	if (diversity <= 0) {
+	if (maxWholeWords < 1000) {
 		diversity = "недоступно";
-	} else {
+	} else if (maxWholeWords >= 10000) {
+		// Leave diversity as is, it's accurate enough
 		diversity = diversity.toFixed(3);
+	} else {
+		// Use logarithmic dependence equation to predict diversity in check point
+		// based on incomplete data
+		let correction = 1.0098 - 0.1088 * Math.log(maxWholeWords);
+		diversity = (diversity - correction).toFixed(3);
 	}
 
   return {"diversity": diversity, "mostFrequentWords": mostFrequentWords, "isEaster": isEaster, "averagePostLength": averagePostLength, "name": name};
