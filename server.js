@@ -11,6 +11,11 @@ const sw = require('stopword');
 const Morphy = require('phpmorphy').default;
 
 const POSTSNUMBER = 25;
+const CHECKPOINT = 10000;
+
+const customStopwords = ["c","а","без","более","больше","большой","будем","будет","будете","будешь","буду","будут","будь","бы","бывает","был","была","были","было","быть","в","вам","вами","вас","ваш","ваша","ваше","ваши","ведь","весь","вне","во","вообще","вот","все","всем","всеми","всему","всех","всего","всею","всю","вся","всё","вы","г","где","да","даже","для","до","его","ее","если","еще","ещё","ею","её","же","за","зато","зачем","здесь","и","из","или","им","ими","их","к","каждая","каждое","каждые","каждый","как","какая","какие","какого","какой","какое","кем","когда","кого","ком","кому","конечно","которая","которого","которой","которое","которые","которым","который","которых","кроме","кто","куда","ли","лишь","меня","мимо","мне","много","мной","мною","мои","мой","моя","моё","мы","на","над","надо","наиболее","наконец","нам","нами","нас","наш","наша","наше","наши","не","него","нее","ней","нем","нему","нет","нею","неё","ни","нибудь","ним","ними","них","но","ну","нх","о","об","около","он","она","они","оно","от","очень","перед","по","под","пор","после","потому","почему","почти","при","про","сам","сама","сами","самим","самими","самих","само","самого","самой","самом","самому","саму","самый","свое","своём","своё","своего","своей","своему","свои","своя","своими","своих","свой","свою","своею","себе","себя","сих","со","собой","собою","та","так","такая","также","таки","такие","такое","такой","там","твои","твой","твоя","твоё","те","тебе","тебя","тем","теми","тех","то","тобой","тобою","того","тоже","только","том","тому","тот","тою","ту","туда","тут","ты","уж","уже","хоть","хотя","чего","чем","чему","через","что","чтоб","чтобы","чуть","эта","эти","этим","этими","этих","это","этого","этой","этом","этому","этот","эту","nbsp", "mdash", "ndash", "quot", "laquo", "raquo", "hellip"];
+
+const easterNames = ["mozgosteb", "bearinbloodbath", "adscripta"];
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
@@ -18,7 +23,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.raw());
 
 const morphy = new Morphy('ru', {
-//  nojo:                false,
   storage:             Morphy.STORAGE_MEM,
   predict_by_suffix:   true,
   predict_by_db:       true,
@@ -39,48 +43,20 @@ const sortByValue = (obj) => {
 
 	// Sort items by value
 	sortable.sort(function(a, b) {
-	  return b[1]-a[1]; // compare numbers
+	  return b[1]-a[1];
 	});
 
 	return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
 };
 
-const wordsFrequency = (wordsArray) => {
-  let result = {};
+const purifyText = (allWords) => {
+	// Get rid of stopwords
+	let meaningfulWords = sw.removeStopwords(allWords, sw.ru);
+	meaningfulWords = sw.removeStopwords(meaningfulWords, customStopwords);
 
-  for (let i=0; i<wordsArray.length; i++) {
-    if (result[wordsArray[i]]) {
-      result[wordsArray[i]]++;
-    } else {
-      result[wordsArray[i]] = 1;
-    }
-  }
-
-  return result;
-};
-
-const languageDiversity = (text, name) => {
-  // Remove HTML tags from resulting string
-  text = striptags(text).toLowerCase();
-
-  // Create an array of all words
-  let allWords = tokenizer.tokenize(text);
-
-  const customStopwords = ["ещё", "какой", "какая", "какое", "какие", "какого", "очень", "и", "который", "которая", "которые", "которое", "которым", "которых", "все", "всё", "всех", "всего", "всеми", "всем", "его", "ее", "её", "их", "ими", "них", "ними", "nbsp", "mdash", "quot", "laquo", "raquo"];
-
-	const easterNames = ["mozgosteb", "bearinbloodbath", "adscripta"];
-
-	const isEaster = easterNames.includes(name);
-
-  // Remove Russian stopwords
-  let meaningfulWords = sw.removeStopwords(allWords, sw.ru);
-
-  // Remove custom stopwords
-  meaningfulWords = sw.removeStopwords(meaningfulWords, customStopwords);
-
-	// Remove one-letter words
 	let meaningfulWordsPure = [];
 
+	// Get rid of one-letter words; standartize words
 	for (let i=0; i<meaningfulWords.length; i++) {
 		if (meaningfulWords[i].length > 1) {
 			let wordOptions = morphy.lemmatize(meaningfulWords[i]);
@@ -90,29 +66,101 @@ const languageDiversity = (text, name) => {
 		}
 	}
 
-  // Stem each word in the array
-  // const stemmedWords = meaningfulWordsPure.map(x => natural.PorterStemmerRu.stem(x));
-	// Remove stemming for now. To be refactored.
-	const stemmedWords = meaningfulWordsPure;
+	return meaningfulWordsPure;
+};
 
-  // Get 10 most frequent words
-  const wordsFrequencyObj = wordsFrequency(meaningfulWordsPure);
+const wordsFrequency = (allWords) => {
+	let meaningfulWordsPure = purifyText(allWords);
+  let result = {};
+
+  for (let i=0; i<meaningfulWordsPure.length; i++) {
+    if (result[meaningfulWordsPure[i]]) {
+      result[meaningfulWordsPure[i]]++;
+    } else {
+      result[meaningfulWordsPure[i]] = 1;
+    }
+  }
+
+  return result;
+};
+
+const languageDiversity = (text, name) => {
+	const isEaster = easterNames.includes(name);
+
+  // Remove HTML tags from resulting string
+  text = striptags(text).toLowerCase();
+
+	// Get array of all words
+	let allWords = tokenizer.tokenize(text);
+
+	// Calculate average post length
+	const averagePostLength = Math.round(allWords.length / POSTSNUMBER);
+
+	// Calculate number of whole thousands
+	let maxWholeWords = Math.floor(allWords.length / 1000) * 1000;
+
+	// Get 10 most frequent words
+  const wordsFrequencyObj = wordsFrequency(allWords);
   const mostFrequentWords = sortByValue(wordsFrequencyObj).slice(0, 10);
 
+	// Truncate long text to standard length
+	allWords = allWords.slice(0, CHECKPOINT + 1);
+
+  // Remove stop words and lemmatize
+	const allMeaningfullWords = purifyText(allWords);
+
   // Remove duplicates
-  const uniqueWords = Array.from(new Set(stemmedWords));
+  const uniqueWords = Array.from(new Set(allMeaningfullWords));
 
   // Calculate resulting text diversity
-  // TODO: Maybe use allWords instead of meaningfulWords?
-  const diversity = (uniqueWords.length / meaningfulWordsPure.length).toFixed(2);
+  let diversity = +(uniqueWords.length / allWords.length).toFixed(3);
 
-	const averagePostLength = Math.round(allWords.length / POSTSNUMBER);
+	switch (maxWholeWords) {
+		case 0:
+	    diversity = 0;
+	    break;
+		case 1000:
+	    diversity -= 0.245;
+	    break;
+	  case 2000:
+			diversity -= 0.19;
+			break;
+		case 3000:
+			diversity -= 0.15;
+			break;
+		case 4000:
+			diversity -= 0.11;
+			break;
+		case 5000:
+			diversity -= 0.09;
+			break;
+		case 6000:
+			diversity -= 0.065;
+			break;
+		case 7000:
+			diversity -= 0.04;
+			break;
+		case 8000:
+			diversity -= 0.03;
+			break;
+		case 9000:
+			diversity -= 0.01;
+			break;
+	  default:
+			diversity = diversity;
+	}
+
+	if (diversity <= 0) {
+		diversity = "недоступно";
+	} else {
+		diversity = diversity.toFixed(3);
+	}
 
   return {"diversity": diversity, "mostFrequentWords": mostFrequentWords, "isEaster": isEaster, "averagePostLength": averagePostLength, "name": name};
 };
 
 app.get('/posts/:user', (req, res) => {
-  let user = req.params.user;
+  const user = req.params.user;
   let allPosts = "";
 
   // Get user's latest posts via LJ API
@@ -136,16 +184,20 @@ app.get('/posts/:user', (req, res) => {
     responseJSON = parser.toJson(response.body.toString(), { object: true });
     let allEntries = responseJSON.feed.entry;
 
-    // Concatenate all posts into one string
-    for (let i=0; i<allEntries.length; i++) {
-      allPosts += allEntries[i].content["$t"];
-    }
+		if (allEntries && allEntries.length && allEntries[0].content && allEntries[0].content["$t"]) {
+			// Concatenate all posts into one string
+	    for (let i=0; i<allEntries.length; i++) {
+	      allPosts += allEntries[i].content["$t"];
+	    }
 
-    const result = {
-      data: languageDiversity(allPosts, user)
-    };
+	    const result = {
+	      data: languageDiversity(allPosts, user)
+	    };
 
-    res.send(JSON.stringify(result));
+	    res.send(JSON.stringify(result));
+		} else {
+			res.status(406).send("No public entries");
+		}
   });
 });
 

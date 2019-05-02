@@ -10,7 +10,7 @@ const loader = document.querySelector(".loader");
 
 $(() => {
   userInput.focus();
-  
+
   // Get user input
   sendButton.addEventListener("click", () => {
     let queryString = sanitize(userInput.value);
@@ -53,6 +53,9 @@ const getPosts = (userName) => {
       } else if (XMLHttpRequest.status == 404) {
         console.error("Not found");
         displayError("Мы не знаем такого пользователя");
+      } else if (XMLHttpRequest.status == 406) {
+        console.error("No entries");
+        displayError("Недостаточно данных");
       } else if (XMLHttpRequest.status == 500) {
         console.error('Internal Server Error.');
       }  else {
