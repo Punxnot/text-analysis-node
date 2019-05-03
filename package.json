@@ -1,7 +1,7 @@
 {
   "name": "LJ-posts-analyser",
   "version": "1.0.0",
-  "description": "",
+  "description": "App to analyze LJ posts linguistic diversity",
   "main": "index.js",
   "scripts": {
     "build:sass": "node-sass -r --output-style compressed src/styles.scss -o dist",
@@ -21,6 +21,7 @@
     "xml2json": "^0.11.2"
   },
   "devDependencies": {
-    "node-sass": "4.11.0"
+    "decache": "^4.5.1",
+    "node-sass": "^4.12.0"
   }
 }
