@@ -10,15 +10,11 @@ const tokenizer = new natural.AggressiveTokenizerRu({language: "ru"});
 const sw = require('stopword');
 const Morphy = require('phpmorphy').default;
 const customStopwords = require('./custom_stop_words.json').list;
-const decache = require('decache');
 
 const POSTSNUMBER = 25;
 const CHECKPOINT = 10000;
 
 const easterNames = ["mozgosteb", "bearinbloodbath", "adscripta"];
-
-// Invalidate cached json
-decache('./custom_stop_words.json');
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
