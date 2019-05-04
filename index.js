@@ -6,7 +6,11 @@ const diversityContainer = document.querySelector("#diversity .result-value");
 const frequencyContainer = document.querySelector("#frequency .result-value");
 const averageLengthContainer = document.querySelector("#averageLength .result-value");
 const errorContainer = document.getElementById("errorContainer");
+const chartsContainer = document.getElementById("chartsContainer");
 const loader = document.querySelector(".loader");
+
+let lengthChart = null;
+let diversityChart = null;
 
 $(() => {
   userInput.focus();
@@ -33,9 +37,9 @@ $(() => {
 });
 
 const getPosts = (userName) => {
-  hideEaster();
   switchLoader(true);
   resultsContainer.classList.add("hidden");
+  chartsContainer.classList.add("hidden");
 
   $.ajax({
     url: `posts/${userName}`,
@@ -46,6 +50,7 @@ const getPosts = (userName) => {
       switchLoader(false);
       displayResults(res.data);
       resultsContainer.classList.remove("hidden");
+      chartsContainer.classList.remove("hidden");
     }, error: function(XMLHttpRequest, textStatus, errorThrown) {
       switchLoader(false);
       if (XMLHttpRequest.status == 0) {
@@ -87,18 +92,17 @@ const getNumWord = (num) => {
 };
 
 const displayResults = (resultsObj) => {
-  if (resultsObj.isEaster) {
-    showEaster(resultsObj.name);
-  }
-
   diversityContainer.innerHTML = resultsObj.diversity;
   const numWord = getNumWord(resultsObj.averagePostLength);
   averageLengthContainer.innerHTML = `${resultsObj.averagePostLength} ${numWord}`;
   frequencyContainer.innerHTML = "";
   frequencyContainer.innerHTML += "<br>";
+
   for (let i=0; i<resultsObj.mostFrequentWords.length; i++) {
     frequencyContainer.innerHTML += `${resultsObj.mostFrequentWords[i][0]}<br>`;
   }
+
+  showDiversityGraph(resultsObj.name, resultsObj.averagePostLength, resultsObj.diversity);
 };
 
 const displayError = (errorText) => {
@@ -114,10 +118,114 @@ const switchLoader = (isLoading) => {
   }
 };
 
-const showEaster = (userName) => {
-  document.body.classList.add(userName);
+const sortUsersByPostLength = (obj) => {
+	let sortable = [];
+
+	for(let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      sortable.push([key, obj[key]]);
+    }
+  }
+
+	sortable.sort(function(a, b) {
+	  return b[1]-a[1];
+	});
+
+  let result = {
+    labels: [],
+    values: []
+  };
+
+  for (let i=0; i<sortable.length; i++) {
+    result.labels.push(sortable[i][0]);
+    result.values.push(sortable[i][1]);
+  }
+
+	return result;
 };
 
-const hideEaster = () => {
-  document.body.className = "";
+const showDiversityGraph = (name, postLength, diversity) => {
+  // Remove any previous charts
+  if (lengthChart) {
+    lengthChart.destroy();
+  }
+
+  if (diversityChart) {
+    diversityChart.destroy();
+  }
+
+  const lengthObj = {
+    'tema': 98,
+    'evo_lutio': 1458,
+    [name]: postLength,
+    'mozgosteb': 728,
+    'bearinbloodbath': 603,
+    'andeadd': 423
+  };
+
+  const diversityObj = {
+    'tema': 184,
+    'evo_lutio': 205,
+    [name]: diversity,
+    'mozgosteb': 238,
+    'bearinbloodbath': 234,
+    'andeadd': 281
+  };
+
+  const sortedLength = sortUsersByPostLength(lengthObj);
+  const sortedDiversity = sortUsersByPostLength(diversityObj);
+
+  var ctx = document.getElementById('lengthChart').getContext('2d');
+
+  lengthChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: sortedLength.labels,
+          datasets: [{
+              label: 'Средняя длина поста',
+              data: sortedLength.values,
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          }
+      }
+  });
+
+  var ctx2 = document.getElementById('diversityChart').getContext('2d');
+
+  diversityChart = new Chart(ctx2, {
+      type: 'bar',
+      data: {
+          labels: sortedDiversity.labels,
+          datasets: [{
+              label: 'Среднее разнообразие постов',
+              data: sortedDiversity.values,
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          }
+      }
+  });
 };

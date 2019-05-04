@@ -9,12 +9,10 @@ const natural = require('natural');
 const tokenizer = new natural.AggressiveTokenizerRu({language: "ru"});
 const sw = require('stopword');
 const Morphy = require('phpmorphy').default;
-const customStopwords = require('./custom_stop_words.json').list;
+const customStopwords = require('./data/custom_stop_words.json').list;
 
 const POSTSNUMBER = 25;
 const CHECKPOINT = 10000;
-
-const easterNames = ["mozgosteb", "bearinbloodbath", "adscripta"];
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
@@ -84,8 +82,6 @@ const wordsFrequency = (allWords) => {
 };
 
 const languageDiversity = (text, name) => {
-	const isEaster = easterNames.includes(name);
-
   // Remove HTML tags from resulting string
   text = striptags(text).toLowerCase();
 
@@ -118,12 +114,12 @@ const languageDiversity = (text, name) => {
 		diversity = "недоступно";
 	} else if (maxWholeWords >= 10000) {
 		// Leave diversity as is, it's accurate enough
-		diversity = diversity.toFixed(3);
+		diversity = diversity.toFixed(3) * 1000;
 	} else {
 		// Use logarithmic dependence equation to predict diversity in check point
 		// based on incomplete data
 		let correction = 1.0098 - 0.1088 * Math.log(maxWholeWords);
-		diversity = (diversity - correction).toFixed(3);
+		diversity = (diversity - correction).toFixed(3) * 1000;
 	}
 
 	let frequentWords = [];
@@ -134,7 +130,6 @@ const languageDiversity = (text, name) => {
   return {
     "diversity": diversity,
     "mostFrequentWords": mostFrequentWords,
-    "isEaster": isEaster,
     "averagePostLength": averagePostLength,
     "name": name
   };

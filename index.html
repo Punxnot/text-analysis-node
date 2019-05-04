@@ -24,30 +24,38 @@
   <noscript><div><img src="https://mc.yandex.ru/watch/53348578" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
 
-  <div class="wrapper">
-    <div class="inputs-container">
-      <input id="name" class="form-control" placeholder="Ник в ЖЖ">
-      <button type="button" id="sendButton" class="btn">Посмотреть</button>
-      <button type="button" id="clearButton" class="clear-btn">&times;</button>
+  <main>
+    <div class="text-data-wrapper">
+      <div class="inputs-container">
+        <input id="name" class="form-control" placeholder="Ник в ЖЖ">
+        <button type="button" id="sendButton" class="btn">Посмотреть</button>
+        <button type="button" id="clearButton" class="clear-btn">&times;</button>
+      </div>
+      <div id="resultsContainer" class="hidden">
+        <div id="diversity" class="result-item">
+          Разнообразие текста:
+          <span class="result-value"></span>
+        </div>
+        <div id="averageLength" class="result-item">
+          Средняя длина поста:
+          <span class="result-value"></span>
+        </div>
+        <div id="frequency" class="result-item">
+          Часто встречающиеся слова:
+          <span class="result-value"></span>
+        </div>
+      </div>
+      <div id="errorContainer"></div>
+      <div class="loader hidden"></div>
     </div>
-    <div id="resultsContainer" class="hidden">
-      <div id="diversity" class="result-item">
-        Разнообразие текста:
-        <span class="result-value"></span>
-      </div>
-      <div id="averageLength" class="result-item">
-        Средняя длина поста:
-        <span class="result-value"></span>
-      </div>
-      <div id="frequency" class="result-item">
-        Часто встречающиеся слова:
-        <span class="result-value"></span>
-      </div>
-    </div>
-    <div id="errorContainer"></div>
-    <div class="loader hidden"></div>
-  </div>
 
+    <div class="charts-container" id="chartsContainer">
+      <canvas id="diversityChart" width="400" height="100"></canvas>
+      <canvas id="lengthChart" width="400" height="100"></canvas>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
   <script src="/index.js"></script>
 </body>
 </html>

@@ -16,42 +16,19 @@ body {
     background-size: auto;
     background-position: left bottom;
   }
-
-  &.mozgosteb {
-    background-image: url('../img/mozgosteb.jpg');
-    background-color: black;
-
-    .btn {
-      background: #0e1111;
-    }
-  }
-
-  &.bearinbloodbath {
-    background-image: url('../img/bearinbloodbath.jpg');
-    background-color: black;
-
-    .btn {
-      background: #bb0a1e;
-    }
-  }
-
-  &.adscripta {
-    background-image: url('../img/adscripta.jpg');
-    background-color: black;
-
-    .btn {
-      background: #5e1914;
-    }
-  }
 }
 
 .hidden {
-  display: none;
+  display: none !important; // To override lib styles
 }
 
-.wrapper {
+main {
+  display: flex;
+}
+
+.text-data-wrapper {
   width: 400px;
-  margin: 0 auto;
+  flex: 0 0 400px;
   padding: 20px;
 }
 
@@ -111,6 +88,18 @@ body {
 
   &:hover {
     opacity: 1;
+  }
+}
+
+.charts-container {
+  flex: 1 1 60%;
+}
+
+canvas {
+  margin-bottom: 30px;
+
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 
