@@ -102,7 +102,7 @@ const displayResults = (resultsObj) => {
     frequencyContainer.innerHTML += `${resultsObj.mostFrequentWords[i][0]}<br>`;
   }
 
-  showDiversityGraph(resultsObj.name, resultsObj.averagePostLength, resultsObj.diversity);
+  showDiversityGraph(resultsObj.name.toLowerCase(), resultsObj.averagePostLength, resultsObj.diversity);
 };
 
 const displayError = (errorText) => {
@@ -118,7 +118,7 @@ const switchLoader = (isLoading) => {
   }
 };
 
-const sortUsersByPostLength = (obj) => {
+const sortUsersByValues = (obj) => {
 	let sortable = [];
 
 	for(let key in obj) {
@@ -154,29 +154,29 @@ const showDiversityGraph = (name, postLength, diversity) => {
     diversityChart.destroy();
   }
 
-  const lengthObj = {
-    'tema': 98,
-    'evo_lutio': 1458,
-    [name]: postLength,
-    'mozgosteb': 728,
-    'bearinbloodbath': 603,
-    'andeadd': 423
-  };
-
   const diversityObj = {
-    'tema': 184,
-    'evo_lutio': 205,
     [name]: diversity,
-    'mozgosteb': 238,
-    'bearinbloodbath': 234,
-    'andeadd': 281
+    'tema': 184,
+    'miss_tramell': 210,
+    'drugoi': 276,
+    'mi3ch': 268,
+    'nemihail': 225
   };
 
-  const sortedLength = sortUsersByPostLength(lengthObj);
-  const sortedDiversity = sortUsersByPostLength(diversityObj);
+  const lengthObj = {
+    [name]: postLength,
+    'tema': 98,
+    'miss_tramell': 274,
+    'drugoi': 332,
+    'mi3ch': 200,
+    'nemihail': 285
+  };
 
+  const sortedLength = sortUsersByValues(lengthObj);
+  const sortedDiversity = sortUsersByValues(diversityObj);
+
+  // Draw length chart
   var ctx = document.getElementById('lengthChart').getContext('2d');
-
   lengthChart = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -202,8 +202,8 @@ const showDiversityGraph = (name, postLength, diversity) => {
       }
   });
 
+  // Draw diversity chart
   var ctx2 = document.getElementById('diversityChart').getContext('2d');
-
   diversityChart = new Chart(ctx2, {
       type: 'bar',
       data: {
