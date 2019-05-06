@@ -92,14 +92,23 @@ const getNumWord = (num) => {
 };
 
 const displayResults = (resultsObj) => {
-  diversityContainer.innerHTML = resultsObj.diversity;
+  if (resultsObj.diversity > 0) {
+    diversityContainer.innerHTML = resultsObj.diversity;
+  } else {
+    diversityContainer.innerHTML = "недоступно";
+  }
+
   const numWord = getNumWord(resultsObj.averagePostLength);
   averageLengthContainer.innerHTML = `${resultsObj.averagePostLength} ${numWord}`;
   frequencyContainer.innerHTML = "";
   frequencyContainer.innerHTML += "<br>";
 
-  for (let i=0; i<resultsObj.mostFrequentWords.length; i++) {
-    frequencyContainer.innerHTML += `${resultsObj.mostFrequentWords[i][0]}<br>`;
+  if (resultsObj.mostFrequentWords.length >= 1) {
+    for (let i=0; i<resultsObj.mostFrequentWords.length; i++) {
+      frequencyContainer.innerHTML += `${resultsObj.mostFrequentWords[i][0]}<br>`;
+    }
+  } else {
+    frequencyContainer.innerHTML = "недоступно"
   }
 
   showDiversityGraph(resultsObj.name.toLowerCase(), resultsObj.averagePostLength, resultsObj.diversity);
@@ -176,6 +185,7 @@ const showDiversityGraph = (name, postLength, diversity) => {
   const sortedDiversity = sortUsersByValues(diversityObj);
 
   // Draw length chart
+  Chart.defaults.global.defaultFontColor = 'rgb(211,211,211)';
   var ctx = document.getElementById('lengthChart').getContext('2d');
   lengthChart = new Chart(ctx, {
       type: 'bar',
@@ -193,11 +203,12 @@ const showDiversityGraph = (name, postLength, diversity) => {
           responsive: true,
           maintainAspectRatio: true,
           scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero: true
-                  }
-              }]
+            yAxes: [{
+              ticks: {
+                beginAtZero: true,
+                fontColor: 'rgba(211,211,211,0.5)'
+              }
+            }]
           }
       }
   });
@@ -222,7 +233,8 @@ const showDiversityGraph = (name, postLength, diversity) => {
           scales: {
               yAxes: [{
                   ticks: {
-                      beginAtZero: true
+                      beginAtZero: true,
+                      fontColor: 'rgba(211,211,211,0.5)'
                   }
               }]
           }

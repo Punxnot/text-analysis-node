@@ -110,8 +110,8 @@ const languageDiversity = (text, name) => {
   // Calculate resulting text diversity
   let diversity = +(uniqueWords.length / allWords.length).toFixed(3);
 
-	if (maxWholeWords < 1000) {
-		diversity = "недоступно";
+	if (maxWholeWords < 1000 || diversity <= 0) {
+		diversity = 0;
 	} else if (maxWholeWords >= 10000) {
 		// Leave diversity as is, it's accurate enough
 		diversity = diversity.toFixed(3) * 1000;
