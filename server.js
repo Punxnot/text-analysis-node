@@ -153,7 +153,7 @@ app.get('/posts/:user', (req, res) => {
       console.log(err);
       res.status(404).send("Not found");
       return;
-    } else if (response.statusCode == "404") {
+    } else if ([404, 410].includes(response.statusCode)) {
 			res.status(404).send("Not found");
 			return;
 		}
