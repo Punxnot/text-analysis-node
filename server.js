@@ -114,12 +114,12 @@ const languageDiversity = (text, name) => {
 		diversity = 0;
 	} else if (maxWholeWords >= 10000) {
 		// Leave diversity as is, it's accurate enough
-		diversity = diversity.toFixed(3) * 100;
+		diversity = (diversity * 100).toFixed(1);
 	} else {
 		// Use logarithmic dependence equation to predict diversity in check point
 		// based on incomplete data
 		let correction = 1.0098 - 0.1088 * Math.log(maxWholeWords);
-		diversity = (diversity - correction).toFixed(3) * 100;
+		diversity = ((diversity - correction) * 100).toFixed(1);
 	}
 
 	let frequentWords = [];
