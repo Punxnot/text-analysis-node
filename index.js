@@ -93,7 +93,7 @@ const getNumWord = (num) => {
 
 const displayResults = (resultsObj) => {
   if (resultsObj.diversity > 0) {
-    diversityContainer.innerHTML = resultsObj.diversity;
+    diversityContainer.innerHTML = `${resultsObj.diversity}%`;
   } else {
     diversityContainer.innerHTML = "недоступно";
   }
@@ -165,11 +165,11 @@ const showDiversityGraph = (name, postLength, diversity) => {
 
   const diversityObj = {
     [name]: diversity,
-    'tema': 184,
-    'miss_tramell': 210,
-    'drugoi': 276,
-    'mi3ch': 268,
-    'nemihail': 225
+    'tema': 18.4,
+    'miss_tramell': 21.0,
+    'drugoi': 27.6,
+    'mi3ch': 26.8,
+    'nemihail': 22.5
   };
 
   const lengthObj = {
