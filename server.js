@@ -149,7 +149,7 @@ app.get('/posts/:user', (req, res) => {
 
   request.get(options, function(err, response, body) {
     if (err) {
-			console.log("Something went wrong!")
+			console.log("Something went wrong")
       console.log(err);
       res.status(404).send("Not found");
       return;
