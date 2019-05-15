@@ -148,12 +148,13 @@ app.get('/posts/:user', (req, res) => {
   };
 
   request.get(options, function(err, response, body) {
+    console.log(response.statusCode);
     if (err) {
 			console.log("Something went wrong")
       console.log(err);
       res.status(404).send("Not found");
       return;
-    } else if ([404, 410].includes(response.statusCode)) {
+    } else if ([403, 404, 410].includes(response.statusCode)) {
 			res.status(404).send("Not found");
 			return;
 		}
