@@ -157,7 +157,6 @@ app.get('/posts/:user', (req, res) => {
         var allEntries = responseJSON.feed.entry;
       }
       catch(error) {
-        console.error(error);
         res.status(404).send("Not found");
         return;
       }
