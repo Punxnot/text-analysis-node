@@ -151,28 +151,35 @@ app.get('/posts/:user', (req, res) => {
     if (err) {
       res.status(404).send("Not found");
       return;
-    } else if ([403, 404, 410].includes(response.statusCode)) {
-			res.status(404).send("Not found");
+    } else if (response.statusCode == 200) {
+      try {
+        var responseJSON = parser.toJson(response.body.toString(), { object: true });
+        var allEntries = responseJSON.feed.entry;
+      }
+      catch(error) {
+        console.error(error);
+        res.status(404).send("Not found");
+        return;
+      }
+
+      if (allEntries && allEntries.length && allEntries[0].content && allEntries[0].content["$t"]) {
+        // Concatenate all posts into one string
+        for (let i=0; i<allEntries.length; i++) {
+          allPosts += allEntries[i].content["$t"];
+        }
+
+        const result = {
+          data: languageDiversity(allPosts, user)
+        };
+
+        res.send(JSON.stringify(result));
+      } else {
+        res.status(406).send("No public entries");
+      }
+    } else {
+      res.status(404).send("Not found");
 			return;
-		}
-
-    responseJSON = parser.toJson(response.body.toString(), { object: true });
-    let allEntries = responseJSON.feed.entry;
-
-		if (allEntries && allEntries.length && allEntries[0].content && allEntries[0].content["$t"]) {
-			// Concatenate all posts into one string
-	    for (let i=0; i<allEntries.length; i++) {
-	      allPosts += allEntries[i].content["$t"];
-	    }
-
-	    const result = {
-	      data: languageDiversity(allPosts, user)
-	    };
-
-	    res.send(JSON.stringify(result));
-		} else {
-			res.status(406).send("No public entries");
-		}
+    }
   });
 });
 
